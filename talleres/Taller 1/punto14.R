@@ -38,20 +38,9 @@ funcrec <- function(ini,fin,pos,mov,E)
       return(NaN)
     }
 
-    print("-------")
-    print(Fx(pos))
-    #print(pos)
-    #print("mov")
-    #print(mov)
-    
-    #mov <- (fin-ini)/10
 
     if( abs(Fx(pos)) < 1 ) # si esta cerca, pues que se acerque mas 
     {
-      print("prueba")
-      print(abs(Fx(pos))*mov)
-      #mov <- (fin-pos)/10
-
       mov <- abs(Fx(pos))*mov
     }
     else
@@ -59,6 +48,7 @@ funcrec <- function(ini,fin,pos,mov,E)
       mov <- (fin-pos)/10
     }
     
+    cat("valor :",Fx(pos),"\t\tmovimiento:",mov,"\t\tError aceptado: ",E,"\t\taccion: ")
     if(Fx(pos) < 0)
     {
       print("suma")
@@ -83,4 +73,4 @@ resp <- func(-20,5)
 print("el resultado es:")
 print(resp)
 
-print(Fx(resp))
+cat("valor sobre la recta : ",Fx(resp))
