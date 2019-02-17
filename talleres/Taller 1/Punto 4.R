@@ -10,78 +10,114 @@ r<-function(t){2-exp(t)}
 # Se declara otra función para el cálculo de r para poder graficar soluciones
 r1<-function(t){2+cos(3*t)}
 
-#Se resolverá por el método de bisección y el método de Newton
+#Se resolverá por el método de la secante, método de posición falsa y método de Newton con aceleración de delta de Aitken
 
-biseccion<-function(a,b){
+secante<-function(a,b,x0){
   if(f(a)*f(b)<0){
-    c=(a+b)/2
+    error=100
+    ant=x0+1
+    cont=0
+    while(error>0.00000001){
+      if(x0!=ant){
+        x1=x0-((x0-ant)/(f(x0)-f(ant)))*f(x0)
+      }else{
+        print("Se ha llegado a una indeterminación en el proceso, no hay solución disponible")
+        break
+      }
+      ant=x0
+      x0=x1
+      error=abs(x0-ant)/abs(x0)
+      cont=cont+1
+    }
+    cat("Iteraciones método secante:",cont,".\n")
+    return(x0)
+  }else{
+    print("No existe una solucion en el intervalo [a,b]")
+  }
+}
+
+posicionFalsa<-function(a,b){
+  if(f(a)*f(b)<0){
+    c=(f(b)*a-f(a)*b)/(f(b)-f(a))
     error=100
     ant=c
+    cont=0
     while(error>0.00000001){
-      if(f(c)==0){
-        break
+      if(f(a)*f(c)<0){
+        b=c
       }else{
-        if(f(a)*f(c)<0){
-          b=c
-        }else{
-          a=c
-        }
+        a=c
       }
-      c=(a+b)/2
+      if(a==b){
+        break
+      }
+      c=(f(b)*a-f(a)*b)/(f(b)-f(a))
       error=abs(c-ant)/abs(c)
       ant=c
+      cont=cont+1
     }
+    cat("Iteraciones método posición falsa:",cont,".\n")
+    return(c)
   }else{
-    print("No hay una solución única en el intervalo escogido")
+    print("No se puede encontrar una raiz a partir de dicho intervalo.")
   }
-  return(c)
 }
 
-Newton<-function(a,b,t0){
+deltaAitkenNewton<-function(a,b,x0){
   if(f(a)*f(b)<0){
     error=100
-    ant=t0
+    cont=0
     while(error>0.00000001){
-      if(dfdt(t0)!=0){
-        t0=t0-f(t0)/dfdt(t0)
+      if(dfdt(x0)!=0){
+        Xn1=x0-f(x0)/dfdt(x0)
       }else{
-        print("El método no converge para el t0 inicial")
+        print("El método no converge correctamente")
+        break
       }
-      error=abs(t0-ant)/abs(t0)
-      ant=t0
+      if(dfdt(Xn1)!=0){
+        Xn2=Xn1-f(Xn1)/dfdt(Xn1)
+      }else{
+        print("El método no converge correctamente")
+        break
+      }
+      if(Xn2-2*Xn1+x0!=0){
+        xAt=Xn2-(Xn2-Xn1)^2/(Xn2-2*Xn1+x0)
+      }else{
+        print("El método no converge correctamente")
+        break
+      }
+      error=abs(xAt-x0)/abs(xAt)
+      x0=xAt
+      cont=cont+1
     }
+    cat("Iteraciones método Newton con delta de Aitken:",cont,".\n")
+    return(xAt)
   }else{
-    print("El intervalo escogido no tiene una raiz única.")
+    print("No existe una solución única en el intervalo dado, intentar uno diferente.")
   }
-  return(t0)
 }
-
 # Se usan ambos métodos para hallar una solución de la ecuación (Preferiblemente la misma, ya que tiene infinitas soluciones por las oscilaciones del coseno)
 # Se calcula el punto de intersección con ambos métodos y se muestran por la consola
 
-tRaizBi=biseccion(-1,-0.5)
-rBi=r(tRaizBi)
-cat("La solución dada por el método de bisección fue: t=",tRaizBi,", r= ",rBi,"\n")
+tRaizSe=secante(-1,-0.5,-0.6)
+rSe=r(tRaizSe)
+cat("La solución dada por el método de la secante fue: t=",tRaizSe,", r= ",rSe,"\n")
 
-tRaizNe=Newton(-1,-0.5,-0.6)
-rNe=r(tRaizNe)
-cat("La solución dada por el método de Newton fue: t=",tRaizNe,", r= ",rNe,"\n")
+tRaizPF=posicionFalsa(-1,-0.5)
+rPF=r(tRaizPF)
+cat("La solución dada por el método de posición falsa fue: t=",tRaizPF,", r= ",rPF,"\n")
+
+tRaizNAt=deltaAitkenNewton(-1,-0.5,-0.6)
+rNAt=r(tRaizNAt)
+cat("La solución dada por el método de Newton con delta de Aitken fue: t=",tRaizNAt,", r= ",rNAt,"\n")
 
 # Realización de la gráfica
 plot(seq(-1,-0.5,0.000001),r(seq(-1,-0.5,0.000001)),type="l",col="blue")
-lines(seq(-1,-0.5,0.000001),r1(seq(-1,-0.5,0.000001)),type="l",col="red")
 abline(h=0,col="black")
-points(rbind(c(tRaizBi,rBi)),pch=17,cex=1.5,col="red")
-points(rbind(c(tRaizNe,rNe)),pch=17,cex=1.5,col="blue")
+lines(seq(-1,-0.5,0.000001),r1(seq(-1,-0.5,0.000001)),type="l",col="red")
+points(rbind(c(tRaizSe,rSe)),pch=17,cex=1.5,col="red")
+points(rbind(c(tRaizPF,rPF)),pch=17,cex=1.5,col="blue")
 
-"Se puede observar tanto en la consola como en la gráfica que las soluciones dadas por el método
-de bisección y por el método de Newton son muy cercanas (comienzan a diferir en luego de de 1*10^-8), por lo cual en la gráfica cuando se
-grafican ambos puntos no se puede diferenciar el rojo del azul ya que está uno encima del otro.
-Sin embargo, la solución del método de Newton fue más acertada en cantidad de cifras significativas
-a la solución real luego de realizar una comparación con una calculadora que tuviera una mayor
-precisión. Es posible que esto se de debido a que como la convergencia del método de Newton es
-cuadrática cuando el error se acerca al límite dado este se acerque en su última iteración más
-a la solución real que el método de bisección que tiene convergencia lineal."
 #Gráfica en coordenadas polares
 
 #plot.new()
@@ -94,12 +130,12 @@ a la solución real que el método de bisección que tiene convergencia lineal."
 #      r[i] <- 0
 #    }
 #  }
-  
+
 #  angulo <- seq(-max(theta),max(theta),by=theta[2]-theta[1])
 #  y <- r*sin(theta)
 #  x <- r*cos(theta)
 #  plot.window(xlim = c(-max(r), max(r)), ylim = c(-max(r), max(r)), asp = 1)
-  
+
 #  aux <- max(r)
 #  while (aux > 0){
 #    fi <- aux*sin(angulo)
@@ -124,4 +160,4 @@ a la solución real que el método de bisección que tiene convergencia lineal."
 #r3=r1(dim)
 #polar(dim,r3,"red")
 
-#Si se desea observar las soluciones en el sistema polar y no en el cartesiano es necesario remover los comentarios de la linea 86 a la 124, si se vuelven a poner se tendrá la solución graficada en el sistema cartesiano
+#Si se desea observar las soluciones en el sistema polar y no en el cartesiano es necesario remover los comentarios de la linea 79 a la 117, si se vuelven a poner se tendrá la solución graficada en el sistema cartesiano
