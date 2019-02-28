@@ -20,16 +20,8 @@ pf <- function(a,b,c,E)
 
 puntof <- function(a,b,E)
 {
-  print(f(a))
-  print(a)
-  print(f(b))
-  print(b)
-
-  #if ( f(a)-a > 0 && f(b)-b < 0 )
-  {
-    return ( pf(a,a-1,0,E) )
-  }
-  return(NaN)
+  return ( pf(a,a-1,0,E) )
+  
 }
 E <- 0.000000001
 puntof(0.2,7,E)
