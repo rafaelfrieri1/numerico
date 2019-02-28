@@ -19,8 +19,10 @@ Newton<-function(a,b,t0)
       ant=t0
       cont=cont+1
     }
-  }else{
-    print("Ingrese otro intervalo ya que el ingresado no tiene raiz única para ser calculada.")
+  }
+  else
+  {
+    print("intervalo ingresado no tiene raiz unica.")
   }
   return(t0)
 }
