@@ -55,4 +55,3 @@ respb <- solve(modif,b)
 cat ("",respa,"\n",respb,"\n la modificacion en el resultado fue :", respb-respa)
 
 
-

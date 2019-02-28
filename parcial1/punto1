@@ -1,0 +1,3 @@
+se calcula el valor de ambas matrices segun gauss ( con funcion de solve ) en relacion al vector b y entre ambos resultados se compara la distancia distancia
+	resultadoModificacion - resultadoOriginal = diferencia 
+		resultadoModificacion - resultadoOriginal = diferencia 

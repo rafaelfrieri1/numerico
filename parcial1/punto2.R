@@ -30,9 +30,7 @@ interseccion <- function (a,E) ## a y b son los limites
 E <- 1.e-4
 #options (digits = 4)
 val <- interseccion(3,E)
-
-cat("retorno ",val," con valor sobre la funcion h de :",h(val))
+cat("retorno ",val," con valor sobre la funcion h de :",h(val),"\n")
 
 val <- interseccion(pi,E)
-
-cat("retorno ",val," con valor sobre la funcion h de :",h(val))
+cat("retorno ",val," con valor sobre la funcion h de :",h(val),"\n")
