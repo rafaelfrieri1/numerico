@@ -1,0 +1,161 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+Punto 6
+
+```{r}
+
+f <- function(x) exp(x)
+
+f2 <- function(x) 1/x
+
+
+taylor <- function(f,p,rep,x)
+{
+  cont = 0 
+  for( i in 0:rep )
+  {
+    if( i == 0 )
+    {
+      cont = cont + f(p)
+    }
+    else
+    {
+      cont = cont + (f(p)*(x)^i/ factorial(i) )
+    }
+  }
+  
+  
+  return(cont)
+}
+
+imptaylor <- function(f,p,rep,x)
+{
+  cat("Polinomio de Taylor\n\n")
+  for( i in 0:rep )
+  {
+    if( i == 0 )
+    {
+      cat("(",f(p),")")
+    }
+    else
+    {
+      cat("(",f(p),"* x^",i,"/",i,"! )")
+    }
+    if ( i != rep  )
+    {
+      cat("+")
+    }
+  }
+  cat("\n\n")
+}
+
+# f(x) * (x - x_0)^n /n! 
+
+vec = 50
+
+# poner que solo tome 5 cifras :v 
+
+imptaylor(f,0,10, i)
+for( i in 0:vec)
+{
+  vt = taylor(f,0,10, i)
+  ex = exp(i)
+  cat(i," -> ",vt,"\t",ex," \t error : ",abs(vt-ex),"\n")
+}
+
+
+# esto esta raro
+imptaylor(1/x,-1,10, vec)
+for( i in 0:vec)
+{
+  vt = taylor(1/x,-1,10, i)
+  ex = 1/(i)
+  cat(i," -> ",vt,"\t",ex," \t error : ",abs(vt-ex),"\n")
+}
+
+#val = 3
+#vt = taylor(f,0,10, val)
+#cat("\n\n",vt,"   ",exp(val),"\n")
+
+
+```
+
+Este polinomio es un mal interpolador, ya que con el aumento de la lejania del punto de referencia (en este caso 0) aumenta el error, por lo que solo tendria utlidad para interpolar valores cercanos
+
+
+Punto 7 
+
+```{r}
+
+
+
+f <- function(x) tan(x)
+
+# f es la funcion para conseguir y y liminf y limsup son los limites de x
+# npasos es la cantidad de intervalos 
+lagrange <- function(eval, func, liminf, limsup, npasos )
+{
+  cortGraf = npasos / 10 
+  
+  if ( liminf > limsup)
+  {
+    temp = liminf
+    liminf = limsup
+    limsup = temp
+  }
+  cont = 1
+  
+  corte = (limsup - liminf) / npasos
+  # result <- array(c(vector1,vector2),dim = c(3,3,2))
+  
+  tot <- c()
+  for( j in 0:(npasos - 1) )
+  {
+    cont = 1
+    for( i in 0:(npasos - 1)  ) # se le quita el primero 
+    {
+      if ( i != j)
+      {
+        arri = eval - func( liminf + corte*i )
+        
+        abaj = func( liminf + corte*j ) - func( liminf + corte*i )
+        
+        cont = cont * (arri/abaj)
+      }
+    }
+    
+    ## esto seria el equivalente a y -> * <- (x-x_n)/(x_m - x_n)
+    cont <- cont * ( liminf + corte*i )
+    
+    tot <- array(c(tot,cont)) 
+    
+    if ( j %% cortGraf == 0 )
+    {
+      #se grafica esto, pero ya lo hare mañana :v 
+    }
+  }
+  #ret = 0
+  #for( j in 0:(npasos - 1) )
+  #{
+  #  if ( j %% cortGraf == 0 )
+  #  {
+  #    #se grafica esto, pero ya lo hare mañana :v 
+  #  }
+  #  vv = tot[j] * ( liminf + corte*i )
+  #  ret = ret + tot[j] * ( liminf + corte*i )  
+  #  print(vv )
+  #  print(ret)
+  #  print("----")
+  #}
+  print(tot)
+}
+
+
+lagrange(3, f,-pi/2, pi/2, 10)
+
+
+```
+
