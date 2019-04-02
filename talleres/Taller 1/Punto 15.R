@@ -4,9 +4,7 @@
 
 # Resolviendo y despejando la ecuación se obtiene la siguiente función
 
-f<-function(x){
-  5*x-exp(x)-1
-}
+f<-function(x){ 5*x-exp(x)-1}
 
 # Parte b
 
